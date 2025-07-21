@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Token Counter</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif; /* A nice sans-serif font often used with Tailwind */
+    }
+    /* Custom scrollbar for better dark mode aesthetics */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1f2937; /* gray-800 */
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #4b5563; /* gray-600 */
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #6b7280; /* gray-500 */
+    }
+  </style>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.523.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-gray-900 text-gray-200">
+  <div id="root"></div>
+  <script type="module">
+    async function initializeApp() {
+      const rootElement = document.getElementById('root');
+      try {
+        // Load pdf.js library
+        // pdf.min.mjs exports its members directly, so the module itself is what we need.
+        const pdfjsLibModule = await import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs');
+        window.pdfjsLib = pdfjsLibModule;
+
+        // Ensure pdf.js is correctly loaded and essential functions are available
+        if (!window.pdfjsLib || typeof window.pdfjsLib.getDocument !== 'function') {
+          throw new Error("PDF.js library was imported but essential functions (like getDocument) are missing.");
+        }
+
+        // Set the worker source for pdf.js
+        if (!window.pdfjsLib.GlobalWorkerOptions.workerSrc) {
+           window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';
+        }
+        
+        console.log("PDF.js loaded and configured successfully.");
+
+        // Now that pdf.js is ready, import and run the main application script
+        await import('./index.tsx');
+        console.log("React application module imported and initialized.");
+
+      } catch (error) {
+        console.error("Critical application error during initialization:", error);
+        if (rootElement) {
+            rootElement.innerHTML = 
+                '<div class="flex flex-col items-center justify-center min-h-screen p-4 text-center">' +
+                    '<h2 class="text-2xl font-bold text-red-400 mb-3">Application Initialization Failed</h2>' +
+                    '<p class="text-gray-300">An essential component, likely the PDF processing library, could not be loaded.</p>' +
+                    '<p class="text-gray-400 text-sm mt-1 mb-3">Please check your internet connection, ensure browser extensions are not blocking scripts, and try refreshing the page.</p>' +
+                    '<p class="text-xs text-gray-500 mt-4">Error details: ' + (error instanceof Error ? error.message : String(error)) + '</p>' +
+                '</div>';
+        }
+      }
+    }
+    initializeApp();
+  </script>
+  <!-- The main app script (index.tsx) is now dynamically imported by initializeApp() above -->
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>

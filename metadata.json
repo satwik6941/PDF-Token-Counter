@@ -1,0 +1,6 @@
+{
+  "name": "PDF Token Counter",
+  "description": "An application to upload PDF files and calculate the token (word) count per page and for the entire document. Features a sleek dark mode UI.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
