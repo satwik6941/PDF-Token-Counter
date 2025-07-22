@@ -41,13 +41,21 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ pageTokens, tota
              <h3 className="text-xl font-semibold text-gray-200">Tokens per Page:</h3>
           </div>
           <div className="max-h-80 overflow-y-auto space-y-2 pr-2 custom-scrollbar"> {/* Added custom-scrollbar class if needed */}
-            {pageTokens.map(({ pageNumber, tokenCount }) => (
+            {pageTokens.map(({ pageNumber, tokenCount, text }) => (
               <div
                 key={pageNumber}
-                className="flex justify-between items-center bg-gray-700/70 p-3 rounded-md hover:bg-gray-600/70 transition-colors duration-150"
+                className="bg-gray-700/70 p-3 rounded-md hover:bg-gray-600/70 transition-colors duration-150"
               >
-                <span className="text-gray-300">Page {pageNumber}:</span>
-                <span className="font-medium text-blue-300">{tokenCount.toLocaleString()} tokens</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-300">Page {pageNumber}:</span>
+                  <span className="font-medium text-blue-300">{tokenCount.toLocaleString()} tokens</span>
+                </div>
+                {tokenCount < 30 && text && (
+                  <div className="mt-2 pt-2 border-t border-gray-600">
+                    <p className="text-xs text-gray-400 mb-1">Words on this page:</p>
+                    <p className="text-sm text-gray-300 leading-relaxed">{text}</p>
+                  </div>
+                )}
               </div>
             ))}
           </div>

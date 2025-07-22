@@ -47,7 +47,11 @@ export const processPdfFile = async (file: File): Promise<{ pageTokens: PageToke
     }).join(' ');
 
     const tokensOnPage = tokenizeText(pageText);
-    pageTokens.push({ pageNumber: i, tokenCount: tokensOnPage });
+    pageTokens.push({ 
+      pageNumber: i, 
+      tokenCount: tokensOnPage,
+      text: pageText.trim()
+    });
     totalTokens += tokensOnPage;
   }
 
